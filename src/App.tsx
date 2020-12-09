@@ -8,6 +8,7 @@ const videoService = new VideoService();
 
 function App({}: AppProps) {
   const [video, setVideo] = useState<File | undefined>(undefined);
+  const [gif, setGIF] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     (async () => {
@@ -21,14 +22,31 @@ function App({}: AppProps) {
     }
   };
 
+  const onVideoChange = async (video: File | undefined | null) => {
+    if (!video) {
+      return;
+    }
+    setVideo(video);
+    const gifURL = await videoService.createGifURLForVideo(video);
+    setGIF(gifURL);
+  };
+
   return (
     <Suspense fallback={<h3>Loading...</h3>}>
-      <h3>Convert Video to GIF</h3>
+      <div className="video-container">
+      <h1>Convert Video to GIF</h1>
+      <h3>Upload a Video</h3>
       <input
         type="file"
-        onChange={(e) => setVideo(e.target.files?.item(0) ?? undefined)}
+        accept=".mp4"
+        onChange={(e) => onVideoChange(e.target.files?.item(0))}
       />
-      {video && <video controls width="250" src={URL.createObjectURL(video)} />}
+      {video && (
+        <video controls width="500" src={VideoService.videoURL(video)} />
+      )}
+      <h3>View your GIF</h3>
+      {gif && <img alt="Your uploaded video as a GIF" width="500" src={gif} />}
+      </div>
     </Suspense>
   );
 }
