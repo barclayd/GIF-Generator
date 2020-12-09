@@ -1,10 +1,14 @@
 import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
 
 export class VideoService {
-  constructor(private ffmpeg = createFFmpeg({ log: true })) {}
+  constructor(
+    private ffmpeg = createFFmpeg({
+      log: import.meta.env.MODE  === 'development',
+    }),
+  ) {}
 
   static videoURL(video: File): string {
-    return URL.createObjectURL(video)
+    return URL.createObjectURL(video);
   }
 
   get isLoaded(): boolean {
@@ -12,7 +16,7 @@ export class VideoService {
   }
 
   private createURLForGIF(data: BlobPart): string {
-    return URL.createObjectURL(new Blob([data]));
+    return URL.createObjectURL(new Blob([data], { type: 'image/gif' }));
   }
 
   public async load() {
@@ -35,7 +39,7 @@ export class VideoService {
       '-t',
       '2.5',
       '-ss',
-      '2.0',
+      '5.0',
       '-f',
       'gif',
       GIF_FILE,
