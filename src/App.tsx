@@ -1,40 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState, Suspense } from 'react';
 import './App.css';
+import { VideoService } from './services/VideoService';
 
 interface AppProps {}
 
+const videoService = new VideoService();
+
 function App({}: AppProps) {
-  // Create the count state.
-  const [count, setCount] = useState(0);
-  // Create the counter (+1 every second)
+  const [video, setVideo] = useState<File | undefined>(undefined);
+  const [gif, setGIF] = useState<string | undefined>(undefined);
+
   useEffect(() => {
-    const timer = setTimeout(() => setCount(count + 1), 1000);
-    return () => clearTimeout(timer);
-  }, [count, setCount]);
-  // Return the App component.
+    (async () => {
+      await loadVideo();
+    })();
+  }, []);
+
+  const loadVideo = async () => {
+    if (!videoService.isLoaded) {
+      await videoService.load();
+    }
+  };
+
+  const onVideoChange = async (video: File | undefined | null) => {
+    if (!video) {
+      return;
+    }
+    setVideo(video);
+    const gifURL = await videoService.createGifURLForVideo(video);
+    setGIF(gifURL);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <p>
-          Page has been open for <code>{count}</code> seconds.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </p>
-      </header>
-    </div>
+    <Suspense fallback={<h3>Loading...</h3>}>
+      <div className="video-container">
+        <h1>Convert Video to GIF</h1>
+        <h3>Upload a Video</h3>
+        <input
+          type="file"
+          accept=".mp4"
+          onChange={(e) => onVideoChange(e.target.files?.item(0))}
+        />
+        {video && (
+          <video controls width="500" src={VideoService.videoURL(video)} />
+        )}
+        <h3>View your GIF</h3>
+        {gif && (
+          <img alt="Your uploaded video as a GIF" width="500" src={gif} />
+        )}
+      </div>
+    </Suspense>
   );
 }
 
