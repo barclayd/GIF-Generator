@@ -1,25 +1,23 @@
-# New Project
+# Video to GIF Converter
 
-> ✨ Bootstrapped with Create Snowpack App (CSA).
+Web app to convert any video to a GIF. Powered by ``ffmpeg`` and WebAssembly
 
-## Available Scripts
+### Demo
 
-### npm start
+<p align="center">
+<img width="500px" alt="screen-recorder-app" src="https://user-images.githubusercontent.com/39765499/101664229-7ed46280-3a43-11eb-9942-99794e8dffeb.gif" />
+</p>
 
-Runs the app in the development mode.
-Open http://localhost:8080 to view it in the browser.
+### How to Set Up Project
 
-The page will reload if you make edits.
-You will also see any lint errors in the console.
+```shellscript
+git clone https://github.com/barclayd/GIF-Generator.git
+cd gif-generator
+npm i
+```
 
-### npm run build
+### How to Start Web App
 
-Builds a static copy of your site to the `build/` folder.
-Your app is ready to be deployed!
-
-**For the best production performance:** Add a build bundler plugin like "@snowpack/plugin-webpack" to your `snowpack.config.js` config file.
-
-### npm test
-
-Launches the application test runner.
-Run with the `--watch` flag (`npm test -- --watch`) to run in interactive watch mode.
+```shell
+npm start
+```
