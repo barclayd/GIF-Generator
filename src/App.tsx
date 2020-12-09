@@ -44,9 +44,11 @@ function App({}: AppProps) {
         {video && (
           <video controls width="500" src={VideoService.videoURL(video)} />
         )}
-        <h3>View your GIF</h3>
         {gif && (
-          <img alt="Your uploaded video as a GIF" width="500" src={gif} />
+          <>
+            <h3>View your GIF</h3>
+            <img alt="Your uploaded video as a GIF" width="500" src={gif} />
+          </>
         )}
       </div>
     </Suspense>
