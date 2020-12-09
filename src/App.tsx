@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import './App.css';
 import { VideoService } from './services/VideoService';
 
@@ -7,7 +7,7 @@ interface AppProps {}
 const videoService = new VideoService();
 
 function App({}: AppProps) {
-  const [ready, setReady] = useState(false);
+  const [video, setVideo] = useState<File | undefined>(undefined);
 
   useEffect(() => {
     (async () => {
@@ -16,11 +16,21 @@ function App({}: AppProps) {
   }, []);
 
   const loadVideo = async () => {
-    await videoService.load();
-    setReady(true);
+    if (!videoService.isLoaded) {
+      await videoService.load();
+    }
   };
 
-  return <></>;
+  return (
+    <Suspense fallback={<h3>Loading...</h3>}>
+      <h3>Convert Video to GIF</h3>
+      <input
+        type="file"
+        onChange={(e) => setVideo(e.target.files?.item(0) ?? undefined)}
+      />
+      {video && <video controls width="250" src={URL.createObjectURL(video)} />}
+    </Suspense>
+  );
 }
 
 export default App;
